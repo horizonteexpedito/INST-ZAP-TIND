@@ -9,9 +9,9 @@ export default function Step1() {
   const router = useRouter()
 
   const handleSelection = (gender: "male" | "female") => {
-    // Store selection in localStorage or state management
+    // Store selection in localStorage
     localStorage.setItem("selectedGender", gender)
-    router.push("/step-2")
+    router.push("/u1") // Assuming u1 is your next step
   }
 
   return (
@@ -21,7 +21,8 @@ export default function Step1() {
         <Button variant="ghost" size="icon" className="text-gray-600">
           <Menu className="h-6 w-6" />
         </Button>
-        <Button size="icon" className="bg-green-500 hover:bg-green-600 text-white rounded-full h-12 w-12">
+        {/* COR ALTERADA: Botão de download com gradiente do Instagram */}
+        <Button size="icon" className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 text-white rounded-full h-12 w-12 shadow-lg hover:opacity-90 transition-opacity">
           <Download className="h-6 w-6" />
         </Button>
       </header>
@@ -37,33 +38,36 @@ export default function Step1() {
 
         {/* Action Buttons */}
         <div className="space-y-4 w-full max-w-md">
+          {/* COR ALTERADA: Botões de ação com gradiente do Instagram */}
           <Button
-  onClick={() => handleSelection("male")}
-  className="w-full h-16 bg-green-500 hover:bg-green-600 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4"
->
-  <div className="bg-white rounded-full p-2">
-    <User className="h-6 w-6 text-green-500" />
-  </div>
-  <span>
-    I Want to Monitor My Partner
-    <br className="sm:hidden" /> {/* Adicione esta linha */}
-    (Male)
-  </span>
-</Button>
+            onClick={() => handleSelection("male")}
+            className="w-full h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          >
+            <div className="bg-white rounded-full p-2">
+              {/* COR ALTERADA: Ícone agora roxo */}
+              <User className="h-6 w-6 text-purple-600" />
+            </div>
+            <span className="text-left">
+              I Want to Monitor My Partner
+              <br />
+              (Male)
+            </span>
+          </Button>
 
           <Button
-  onClick={() => handleSelection("female")}
-  className="w-full h-16 bg-green-500 hover:bg-green-600 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4"
->
-  <div className="bg-white rounded-full p-2">
-    <User className="h-6 w-6 text-green-500" />
-  </div>
-  <span>
-    I Want to Monitor My Partner
-    <br className="sm:hidden" /> {/* Quebra de linha adicionada aqui */}
-    (Female)
-  </span>
-</Button>
+            onClick={() => handleSelection("female")}
+            className="w-full h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+          >
+            <div className="bg-white rounded-full p-2">
+              {/* COR ALTERADA: Ícone agora roxo */}
+              <User className="h-6 w-6 text-purple-600" />
+            </div>
+            <span className="text-left">
+              I Want to Monitor My Partner
+              <br />
+              (Female)
+            </span>
+          </Button>
         </div>
       </main>
 
