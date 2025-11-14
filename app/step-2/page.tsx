@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle } from "lucide-react"
-import Script from "next/script"
+// O <Script> não é mais necessário, então pode ser removido se não for usado em outro lugar.
+// import Script from "next/script" 
 
 // --- Suas funções auxiliares (mantidas) ---
 const sanitizeUsername = (username: string): string => {
@@ -67,17 +68,7 @@ export default function Step2() {
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
   }
 
-  useEffect(() => {
-    if (step === 3) {
-      if (typeof (window as any).checkoutElements !== "undefined") {
-        try {
-          ;(window as any).checkoutElements.init("salesFunnel").mount("#hotmart-sales-funnel")
-        } catch (e) {
-          console.error("Failed to mount Hotmart widget:", e)
-        }
-      }
-    }
-  }, [step])
+  // O useEffect para montar o widget da Hotmart foi REMOVIDO pois não é mais necessário.
 
   const handleInstagramChange = (value: string) => {
     setInstagramHandle(value)
@@ -386,6 +377,7 @@ export default function Step2() {
         </div>
       </div>
 
+      {/* =========== SEÇÃO ALTERADA AQUI =========== */}
       <div className="bg-white p-5 rounded-lg shadow-xl text-center mt-8">
         <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
           <Lock className="text-white" size={32} />
@@ -393,7 +385,7 @@ export default function Step2() {
         <h2 className="text-xl font-bold text-gray-800">
           <span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT
         </h2>
-        <p className="text-gray-600 mt-1">
+        <p className="text-gray-600 mt-1 mb-6">
           Get instant access to the full report with uncensored photos and complete conversation history.
         </p>
 
@@ -408,20 +400,26 @@ export default function Step2() {
             recovered at a later date.
           </p>
         </div>
-      </div>
 
-      <div id="hotmart-sales-funnel" className="w-full pt-2"></div>
+        {/* Botão de redirecionamento adicionado */}
+        <a
+          href="https://pay.hotmart.com/P102903672F?checkoutMode=10"
+          className="mt-6 block w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl"
+        >
+          🔓 UNLOCK COMPLETE REPORT
+        </a>
+      </div>
+      {/* O container da Hotmart foi removido */}
+      {/* ======================================= */}
+
     </div>
   )
 
   return (
     <>
-      <Script src="https://checkout.hotmart.com/lib/hotmart-checkout-elements.js" strategy="afterInteractive" />
+      {/* O script da Hotmart foi removido */}
       <div className="relative min-h-screen flex items-center justify-center p-4 bg-white pt-12">
-        <div className="absolute top-0 left-0 w-full bg-red-600 text-white text-center p-2 font-bold text-sm shadow-lg z-20">
-          <span>Attention: do not close this page, </span>
-          <span className="text-yellow-300">Your payment is still being processed.</span>
-        </div>
+        
         <main className="relative z-10 w-full max-w-md mx-auto text-center space-y-8">
           {step === 1 && renderInitialStep()}
           {step === 2 && renderLoadingStep()}
