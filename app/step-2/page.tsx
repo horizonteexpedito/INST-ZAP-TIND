@@ -198,9 +198,9 @@ export default function Step2() {
     <>
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <p className="text-lg text-gray-800">
-            <span className="font-bold text-red-600">ATTENTION!</span> Our system has identified that many of the new
-            numbers saved on WhatsApp came directly from Instagram.
+          <p className="text-lg text-gray-800 mb-5">
+            <span className="font-bold text-red-600">💔 FEELING BETRAYED?
+</span> “You deserve to know the truth. Even the conversations he tried to hide…”
           </p>
           <p className="text-gray-600">Enter the @Instagram username below and perform a quick search.</p>
         </div>

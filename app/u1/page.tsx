@@ -4,12 +4,13 @@ import type React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import Script from "next/script" // Importado para o widget da Hotmart
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Lock, CheckCircle, Loader2, MapPin, X, CheckCheck, AlertTriangle } from "lucide-react"
 
 // =======================================================
-// HELPER COMPONENTS (FROM STEP-4, PLACED AT THE TOP FOR CLEANLINESS)
+// HELPER COMPONENTS (FROM STEP-4)
 // =======================================================
 
 type Message = {
@@ -271,8 +272,6 @@ export default function U1() {
   const [isLoadingPhoto, setIsLoadingPhoto] = useState(false)
   const [photoError, setPhotoError] = useState("")
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
-  
-  // CORREÇÃO 1: Adicionado o estado 'isPhotoPrivate' que estava faltando
   const [isPhotoPrivate, setIsPhotoPrivate] = useState(false)
 
   const [progress, setProgress] = useState(0)
@@ -284,6 +283,16 @@ export default function U1() {
   const [location, setLocation] = useState<{ lat: number; lng: number; city: string; country: string } | null>(null)
   const [isLoadingLocation, setIsLoadingLocation] = useState(true)
   const [selectedConvoIndex, setSelectedConvoIndex] = useState<number | null>(null)
+  
+  // NOVO ESTADO E FUNÇÕES PARA O COUNTDOWN
+  const [timeLeft, setTimeLeft] = useState(5 * 60); // 5 minutos em segundos
+
+  const formatTime = (seconds: number) => {
+    if (seconds <= 0) return "00:00";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const defaultLocation = { lat: -23.5505, lng: -46.6333, city: "São Paulo", country: "Brazil" }
 
@@ -431,6 +440,31 @@ export default function U1() {
       clearInterval(stepTimer)
     }
   }, [isLoadingStarted, isCompleted, steps])
+  
+  // NOVO USEEFFECT PARA O COUNTDOWN E WIDGET HOTMART
+  useEffect(() => {
+    // Inicia o countdown apenas quando o relatório estiver completo
+    if (isCompleted && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [isCompleted, timeLeft]);
+
+  useEffect(() => {
+    // Monta o widget Hotmart apenas quando o relatório estiver completo
+    if (isCompleted) {
+      if (typeof (window as any).checkoutElements !== 'undefined') {
+        try { 
+          (window as any).checkoutElements.init('salesFunnel').mount('#hotmart-sales-funnel'); 
+        } catch (e) { 
+          console.error("Failed to mount Hotmart widget:", e); 
+        }
+      }
+    }
+  }, [isCompleted]);
+
 
   const handleStartLoadingProcess = () => {
     const fullNumber = (selectedCountry.code + phoneNumber).replace(/[^0-9+]/g, "")
@@ -447,17 +481,20 @@ export default function U1() {
 
   return (
     <>
+      {/* SCRIPT DA HOTMART CARREGADO NO INÍCIO */}
+      <Script src="https://checkout.hotmart.com/lib/hotmart-checkout-elements.js" strategy="afterInteractive" />
+
       <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-12">
         <main className="w-full max-w-md mx-auto text-center space-y-8">
           <div className="flex items-center justify-center gap-2 text-green-500 font-semibold text-lg">
             <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.051 3.488" /></svg>
             <span>WhatsApp</span>
           </div>
-
-          <div className="mb-6 h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+          
+          <div className="mx-auto mb-6 h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
             {isLoadingPhoto ? <Loader2 className="h-10 w-10 text-gray-500 animate-spin" /> : profilePhoto ? <Image src={profilePhoto} alt="WhatsApp Profile" width={128} height={128} className="object-cover h-full w-full" unoptimized onError={() => setProfilePhoto("/placeholder.svg")} /> : <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>}
           </div>
-
+          
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Congratulations, you've earned<br />1 free access!</h1>
             <p className="text-lg text-gray-500">Enter the number below and start silent monitoring.</p>
@@ -517,7 +554,38 @@ export default function U1() {
                     <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Recovered Media</h2><p className="text-sm text-gray-600 mb-4"><span className="font-semibold text-red-500">247 deleted photos</span> were found that may contain sensitive content.</p><div className="grid grid-cols-3 gap-3">{femaleImages.map((image, index) => (<div key={index} className="aspect-square relative rounded-lg overflow-hidden"><Image src={image} alt={`Recovered media ${index + 1}`} fill className="object-cover" /></div>))}</div></div>
                     <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Suspicious Keywords</h2><p className="text-sm text-gray-600 mb-4">The system scanned <span className="font-semibold text-red-500">4,327 messages</span> and identified several keywords.</p><div className="space-y-1">{suspiciousKeywords.map((item, index) => (<div key={index} className="flex items-center justify-between py-2 border-b last:border-b-0"><span className="text-lg text-gray-800">"{item.word}"</span><div className="flex items-center justify-center w-7 h-7 bg-green-500 rounded-full text-white text-sm font-bold">{item.count}</div></div>))}</div></div>
                     <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Suspicious Location</h2><p className="text-sm text-gray-600 mb-4">The device location was tracked. Check below:</p>{isLoadingLocation ? <div className="text-center p-10 h-96 flex items-center justify-center"><p>Detecting location...</p></div> : <RealtimeMap lat={location?.lat ?? defaultLocation.lat} lng={location?.lng ?? defaultLocation.lng} city={location?.city ?? defaultLocation.city} country={location?.country ?? defaultLocation.country} />}</div>
-                    <div className="bg-[#0A3622] text-white rounded-lg p-6 text-center"><h2 className="text-2xl font-bold">EXCLUSIVE DISCOUNT</h2><div className="text-xl text-red-400 line-through my-2">$197</div><div className="text-4xl font-bold mb-4">$37</div><a href="https://pay.hotmart.com/R102720481T?off=m3prb7n1&checkoutMode=10" target="_blank" rel="noopener noreferrer" className="block w-full rounded-full bg-[#26d366] py-3 text-lg font-bold text-white shadow-[0_4px_12px_rgba(38,211,102,0.3)] hover:bg-[#22b858]">BUY NOW →</a></div>
+                    
+                    {/* =========== NOVA SEÇÃO DE CTA COM COUNTDOWN E HOTMART =========== */}
+                    <div className="bg-white p-5 rounded-lg shadow-xl text-center border border-gray-200">
+                      <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
+                        <Lock className="text-white" size={32} />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-800">
+                        <span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT
+                      </h2>
+                      <p className="text-gray-600 mt-1">
+                        Get instant access to the full report with uncensored photos and complete conversation history.
+                      </p>
+
+                      <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5">
+                        <div className="flex items-center justify-center gap-2">
+                          <AlertTriangle className="text-red-600" />
+                          <h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3>
+                        </div>
+                        <p className="text-4xl font-mono font-bold my-1 text-red-600">
+                          {formatTime(timeLeft)}
+                        </p>
+                        <p className="text-xs text-red-700">
+                          After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.
+                        </p>
+                      </div>
+                      
+                      {/* Container do Widget Hotmart */}
+                      <div id="hotmart-sales-funnel" className="w-full pt-4"></div>
+
+                    </div>
+                    {/* =================================================================== */}
+
                   </div>
                 </div>
               )}
