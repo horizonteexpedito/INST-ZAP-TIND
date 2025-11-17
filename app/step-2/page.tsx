@@ -24,24 +24,24 @@ const MALE_PROFILES = [
 const MALE_IMAGES = [
   '/images/female/perfil/1.jpg', '/images/female/perfil/2.jpg', '/images/female/perfil/3.jpg',
   '/images/female/perfil/4.jpg', '/images/female/perfil/5.jpg', '/images/female/perfil/6.jpg',
-  '/images/female/perfil/7.jpg', '/images/female/perfil/8.jpg', '/images/female/perfil/9.jpg'
+  '/images/female/perfil/7.jpg', '/images/female/perfil/8.jpeg', '/images/female/perfil/9.jpg'
 ];
 
 // Imagens "interceptadas" (borradas) que o alvo curtiu
 const LIKED_BY_MALE_PHOTOS = [
-    '/images/male/liked/male-liked-photo-1.jpeg',
+    '/images/male/liked/male-liked-photo-1.jpg',
     '/images/male/liked/male-liked-photo-2.jpeg',
     '/images/male/liked/male-liked-photo-3.jpeg',
 ];
 const LIKED_BY_MALE_STORIES = [
-    '/images/male/liked/male-liked-story-1.jpeg',
+    '/images/male/liked/male-liked-story-1.jpg',
     '/images/male/liked/male-liked-story-2.jpg',
     '/images/male/liked/male-liked-story-3.jpg',
 ];
 const LIKED_BY_FEMALE_PHOTOS = [
-    '/images/female/liked/female-liked-photo-1.jpeg',
-    '/images/female/liked/female-liked-photo-2.jpeg',
-    '/images/female/liked/female-liked-photo-3.jpeg',
+    '/images/female/liked/female-liked-photo-1.jpg',
+    '/images/female/liked/female-liked-photo-2.jpg',
+    '/images/female/liked/female-liked-photo-3.jpg',
 ];
 const LIKED_BY_FEMALE_STORIES = [
     '/images/female/liked/female-liked-story-1.jpg',
