@@ -1,93 +1,191 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { User, Menu, Download } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { Search, Activity, MapPin, Eye, ShieldCheck, Heart, Camera, MessageSquare, Check, CheckCircle, Star, FolderArchive, Users } from 'lucide-react'
+import Image from "next/image"
+
+// A small helper component to render the star ratings
+const StarRating = ({ rating = 5 }) => (
+  <div className="flex text-yellow-400">
+    {Array.from({ length: rating }).map((_, index) => (
+      <Star key={index} className="w-5 h-5 fill-current" />
+    ))}
+  </div>
+);
 
 export default function Step1() {
-  const router = useRouter()
-
-  const handleSelection = (gender: "male" | "female") => {
-    // Store selection in localStorage
-    localStorage.setItem("selectedGender", gender)
-    router.push("/u1") // Assuming u1 is your next step
-  }
-
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
-      <header className="flex justify-between items-center p-4">
-        <Button variant="ghost" size="icon" className="text-gray-600">
-          <Menu className="h-6 w-6" />
-        </Button>
-        {/* COR ALTERADA: Botão de download com gradiente do Instagram */}
-        <Button size="icon" className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 text-white rounded-full h-12 w-12 shadow-lg hover:opacity-90 transition-opacity">
-          <Download className="h-6 w-6" />
-        </Button>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pb-20">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">Protect Your Relationship</h1>
-          <p className="text-lg text-gray-500 leading-relaxed">
-            Discover how to keep your relationship safe and healthy with our exclusive solution.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-4 w-full max-w-md">
-          {/* COR ALTERADA: Botões de ação com gradiente do Instagram */}
-          <Button
-            onClick={() => handleSelection("male")}
-            className="w-full h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-          >
-            <div className="bg-white rounded-full p-2">
-              {/* COR ALTERADA: Ícone agora roxo */}
-              <User className="h-6 w-6 text-purple-600" />
-            </div>
-            <span className="text-left">
-              I Want to Monitor My Partner
-              <br />
-              (Male)
-            </span>
-          </Button>
-
-          <Button
-            onClick={() => handleSelection("female")}
-            className="w-full h-20 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white text-lg font-medium rounded-2xl flex items-center justify-start px-6 gap-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-          >
-            <div className="bg-white rounded-full p-2">
-              {/* COR ALTERADA: Ícone agora roxo */}
-              <User className="h-6 w-6 text-purple-600" />
-            </div>
-            <span className="text-left">
-              I Want to Monitor My Partner
-              <br />
-              (Female)
-            </span>
-          </Button>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="pb-8 px-4">
-        <div className="text-center space-y-4">
-          <div className="flex justify-center space-x-8 text-sm">
-            <Link href="#" className="text-blue-500 hover:underline">
-              Privacy Policy
-            </Link>
-            <Link href="#" className="text-blue-500 hover:underline">
-              Terms of Use
-            </Link>
-            <Link href="#" className="text-blue-500 hover:underline">
-              Email Support
-            </Link>
+    <div className="bg-white text-gray-800 font-sans">
+      {/* =================================== */}
+      {/* 1. Hero Section                     */}
+      {/* =================================== */}
+      <section className="bg-gradient-to-br from-[#1d1d3a] via-[#2a2a4b] to-[#3a2c6b] text-white py-16 px-4 overflow-hidden">
+        <div className="container mx-auto max-w-3xl text-center flex flex-col items-center">
+          
+          <div className="bg-gradient-to-br from-pink-500 to-red-500 p-4 rounded-2xl mb-8 shadow-lg">
+            <Search className="h-8 w-8 text-white" />
           </div>
-          <p className="text-gray-400 text-sm">© 2024 Protect Your Relationship. All rights reserved.</p>
+
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
+  Today it's a. <span className="text-red-500">like</span> Tomorrow, a <span className="text-red-500">conversation.</span> And after?<br />
+</h1>
+
+          <p className="text-lg text-gray-300 mb-8 max-w-xl">
+            Betrayal doesn't start with a kiss. It starts with a direct message.
+          </p>
+
+          <div className="inline-flex items-center bg-green-900/50 text-green-300 border border-green-700 rounded-full px-4 py-1.5 text-sm mb-8">
+            <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+            <span>Advanced Detection System - Updated November 2025</span>
+          </div>
+
+          <div className="w-full max-w-lg space-y-3 text-left mb-8">
+    {/* Text 1: Stories */}
+    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+        
+        
+        <span>👀 Find out which "friends" see your stories that you can't view.</span>
+    </div>
+
+    {/* Text 2: Likes */}
+    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+        
+        
+        <span>👍 Monitor every like, even if they try to "unlike" later.</span>
+    </div>
+    
+    {/* Text 3: Saved Media */}
+    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+        
+        
+        <span>💾 Discover the photos and videos they're saving in hidden folders.</span>
+    </div>
+
+    {/* Text 4: Deleted Messages */}
+    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+      
+      
+      <span>🤫 "This message was deleted"? Find out the original content</span>
+    </div>
+</div>
+
+          <button className="w-full max-w-lg bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105">
+            GET THE TRUTH – START ANONYMOUS SEARCH
+          </button>
+          <p className="text-xs text-gray-400 mt-2">100% anonymous investigation. They'll never know you checked.</p>
         </div>
-      </footer>
+      </section>
+
+      {/* =================================== */}
+      {/* 2. "You're Not Paranoid" Section    */}
+      {/* =================================== */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+            You're Not Paranoid -
+          </h2>
+          <h3 className="text-3xl md:text-4xl font-bold text-red-500 mb-6">
+            You're Protecting Yourself
+          </h3>
+          <p className="text-gray-500 max-w-2xl mx-auto mb-12">
+            Stop second-guessing your instincts. Get the clarity you need to make informed decisions about your relationship.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+              <div className="inline-block bg-pink-100 p-4 rounded-xl mb-4">
+                <Search className="h-8 w-8 text-pink-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">RECENT ACTIVITY</h4>
+              <p className="text-gray-500 text-sm">See which social networks he uses the most
+</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+              <div className="inline-block bg-purple-100 p-4 rounded-xl mb-4">
+                <Users className="h-8 w-8 text-purple-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">PROFILES VISITED </h4>
+              <p className="text-gray-500 text-sm">See the most visited profiles</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+              <div className="inline-block bg-red-100 p-4 rounded-xl mb-4">
+                <Camera className="h-8 w-8 text-red-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">LIKED PHOTOS</h4>
+              <p className="text-gray-500 text-sm">See all liked photos</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg text-center">
+              <div className="inline-block bg-orange-100 p-4 rounded-xl mb-4">
+                <MessageSquare className="h-8 w-8 text-orange-500" />
+              </div>
+              <h4 className="font-bold text-lg mb-2">PRIVATE CONVERSATIONS</h4>
+              <p className="text-gray-500 text-sm">What they're really saying to others</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* =================================== */}
+      {/* 3. Testimonials Section             */}
+      {/* =================================== */}
+      <section className="bg-gray-50 py-20 px-4">
+        <div className="container mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">
+            You're Not Alone - See What Others Discovered
+          </h2>
+          <div className="space-y-8">
+            {/* Testimonial Card 1 */}
+            <div className="bg-white p-6 rounded-xl shadow-lg text-left">
+              <div className="flex items-center mb-4">
+                <Image src="/placeholder-user-1.jpg" alt="Sarah" width={48} height={48} className="rounded-full mr-4" />
+                <div>
+                  <p className="font-bold">Sarah, 32</p>
+                  <p className="text-sm text-green-600 flex items-center"><Check className="h-4 w-4 mr-1"/>Verified User</p>
+                </div>
+              </div>
+              <blockquote className="text-gray-600 italic mb-4 before:content-['“'] after:content-['”']">
+                I knew something was off. The report confirmed my worst fears, but at least now I could make an informed decision instead of living in constant anxiety.
+              </blockquote>
+              <StarRating />
+            </div>
+
+            {/* Testimonial Card 2 */}
+            <div className="bg-white p-6 rounded-xl shadow-lg text-left">
+              <div className="flex items-center mb-4">
+                <Image src="/placeholder-user-2.jpg" alt="Jennifer" width={48} height={48} className="rounded-full mr-4" />
+                <div>
+                  <p className="font-bold">Jennifer, 28</p>
+                  <p className="text-sm text-gray-500">Investigation completed November 2025</p>
+                </div>
+              </div>
+              <blockquote className="text-gray-600 italic mb-4 before:content-['“'] after:content-['”']">
+                {"Best decision I ever made. It saved me from months of uncertainty and gave me the closure I needed. My instincts were right all along."}
+              </blockquote>
+              <StarRating />
+            </div>
+
+            {/* Testimonial Card 3 */}
+            <div className="bg-white p-6 rounded-xl shadow-lg text-left">
+              <div className="flex items-center mb-4">
+                <Image src="/placeholder-user-3.jpg" alt="Michelle" width={48} height={48} className="rounded-full mr-4" />
+                <div>
+                  <p className="font-bold">Michelle, 35</p>
+                  <p className="text-sm text-green-600 flex items-center"><Check className="h-4 w-4 mr-1"/>Verified User</p>
+                </div>
+              </div>
+              <blockquote className="text-gray-600 italic mb-4 before:content-['“'] after:content-['”']">
+                I felt guilty for checking, but my instincts were right. Now I can move on with confidence instead of living in doubt.
+              </blockquote>
+              <StarRating />
+            </div>
+          </div>
+
+          <button className="w-full max-w-lg mt-12 bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105">
+            START MY ANONYMOUS INVESTIGATION
+          </button>
+          <p className="text-xs text-gray-400 mt-2">100% anonymous - Your investigation stays completely private</p>
+
+        </div>
+      </section>
     </div>
   )
 }

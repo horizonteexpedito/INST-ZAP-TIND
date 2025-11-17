@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
-import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle } from "lucide-react"
-// O <Script> não é mais necessário, então pode ser removido se não for usado em outro lugar.
-// import Script from "next/script" 
+import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle, Wifi } from "lucide-react"
 
 // --- Suas funções auxiliares (mantidas) ---
 const sanitizeUsername = (username: string): string => {
@@ -37,22 +35,37 @@ const getProfileFromCache = (user: string): any | null => {
   return null
 }
 
+// Componente do cabeçalho
+const PageHeader = () => (
+  <header className="w-full max-w-md mx-auto text-center px-4 pt-12 pb-8">
+    <div className="inline-block bg-white p-4 rounded-2xl shadow-lg mb-6">
+      <Wifi className="h-10 w-10 text-indigo-500" />
+    </div>
+    <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+      <span role="img" aria-label="magnifying glass">🔍</span> Help Us Find What They're Hiding
+    </h1>
+    <p className="text-white">
+      The more details you provide, the deeper we can dig. Everything stays 100% anonymous.
+    </p>
+  </header>
+);
+
+
 // --- Componente da Página com Fluxo Completo ---
 export default function Step2() {
   const [step, setStep] = useState(1)
   const [instagramHandle, setInstagramHandle] = useState("")
+  // 1. ADICIONE O ESTADO PARA O GÊNERO AQUI
+  const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<any>(null)
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [loadingProgress, setLoadingProgress] = useState(0)
   const debounceTimer = useRef<NodeJS.Timeout | null>(null)
-
-  // --- Lógica do contador regressivo ---
-  const [timeLeft, setTimeLeft] = useState(5 * 60) // 5 minutos em segundos
+  const [timeLeft, setTimeLeft] = useState(5 * 60)
 
   useEffect(() => {
-    // Só ativa o contador quando o passo 3 (resultados) for exibido
     if (step === 3 && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft((prevTime) => prevTime - 1)
@@ -67,8 +80,6 @@ export default function Step2() {
     const remainingSeconds = seconds % 60
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
   }
-
-  // O useEffect para montar o widget da Hotmart foi REMOVIDO pois não é mais necessário.
 
   const handleInstagramChange = (value: string) => {
     setInstagramHandle(value)
@@ -187,23 +198,57 @@ export default function Step2() {
 
   const renderInitialStep = () => (
     <>
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <p className="text-lg text-gray-800 mb-5">
-            <span className="font-bold text-red-600">💔 FEELING BETRAYED?
-</span> “You deserve to know the truth. Even the conversations he tried to hide…”
-          </p>
-          <p className="text-gray-600">Enter the @Instagram username below and perform a quick search.</p>
-        </div>
-        <div className="flex items-center justify-center gap-3">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-pink-500">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="12" cy="12" r="2" fill="currentColor" />
-          </svg>
-          <h1 className="text-2xl font-bold text-black tracking-wide">TARGET IDENTIFICATION</h1>
+      {/* 2. ADICIONE A SEÇÃO DE GÊNERO AQUI */}
+      <div className="w-full text-left space-y-3">
+        <h3 className="text-lg font-semibold text-gray-800">What gender are they?</h3>
+        <div className="grid grid-cols-3 gap-3">
+            <button
+                onClick={() => setSelectedGender('male')}
+                className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${
+                    selectedGender === 'male' 
+                    ? 'border-indigo-500 bg-indigo-50 shadow-md' 
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
+            >
+                <span className="text-3xl">👱‍♂️</span>
+                <span className="font-medium text-sm text-gray-700">Male</span>
+            </button>
+            <button
+                onClick={() => setSelectedGender('female')}
+                className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${
+                    selectedGender === 'female' 
+                    ? 'border-indigo-500 bg-indigo-50 shadow-md' 
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
+            >
+                <span className="text-3xl">👱‍♀️</span>
+                <span className="font-medium text-sm text-gray-700">Female</span>
+            </button>
+            <button
+                onClick={() => setSelectedGender('non-binary')}
+                className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${
+                    selectedGender === 'non-binary' 
+                    ? 'border-indigo-500 bg-indigo-50 shadow-md' 
+                    : 'border-gray-200 bg-white hover:border-gray-300'
+                }`}
+            >
+                <span className="text-3xl">👱</span>
+                <span className="font-medium text-sm text-gray-700">Non-binary</span>
+            </button>
         </div>
       </div>
+      
+      {/* --- Conteúdo Original --- */}
+      <div className="flex items-center justify-center gap-3">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-pink-500">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+        </svg>
+        <h1 className="text-2xl font-bold text-black tracking-wide">TARGET IDENTIFICATION</h1>
+      </div>
+      <p className="text-gray-600 !-mt-4 pt-6">Enter the @Instagram username below and perform a quick search.</p>
+
       <div className="relative w-full">
         <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
         <Input
@@ -215,7 +260,7 @@ export default function Step2() {
           onChange={(e) => handleInstagramChange(e.target.value)}
         />
       </div>
-      <div className="w-full min-h-[140px]">
+      <div className="w-full min-h-[140px] bg-muted">
         {isLoading && (
           <div className="p-4 bg-pink-50 rounded-lg border-2 border-pink-400 animate-pulse">
             <div className="flex items-center gap-4">
@@ -376,8 +421,6 @@ export default function Step2() {
           </div>
         </div>
       </div>
-
-      {/* =========== SEÇÃO ALTERADA AQUI =========== */}
       <div className="bg-white p-5 rounded-lg shadow-xl text-center mt-8">
         <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
           <Lock className="text-white" size={32} />
@@ -388,7 +431,6 @@ export default function Step2() {
         <p className="text-gray-600 mt-1 mb-6">
           Get instant access to the full report with uncensored photos and complete conversation history.
         </p>
-
         <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5">
           <div className="flex items-center justify-center gap-2">
             <AlertTriangle className="text-red-600" />
@@ -400,8 +442,6 @@ export default function Step2() {
             recovered at a later date.
           </p>
         </div>
-
-        {/* Botão de redirecionamento adicionado */}
         <a
           href="https://pay.hotmart.com/P102903672F?checkoutMode=10"
           className="mt-6 block w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl"
@@ -409,23 +449,24 @@ export default function Step2() {
           🔓 UNLOCK COMPLETE REPORT
         </a>
       </div>
-      {/* O container da Hotmart foi removido */}
-      {/* ======================================= */}
-
     </div>
   )
 
   return (
-    <>
-      {/* O script da Hotmart foi removido */}
-      <div className="relative min-h-screen flex items-center justify-center p-4 bg-white pt-12">
-        
-        <main className="relative z-10 w-full max-w-md mx-auto text-center space-y-8">
-          {step === 1 && renderInitialStep()}
-          {step === 2 && renderLoadingStep()}
-          {step === 3 && renderResultsStep()}
-        </main>
-      </div>
-    </>
+    <div className="min-h-screen flex flex-col items-center p-4 bg-[rgba(156,79,165,1)]">
+      <PageHeader />
+      
+      <main className="w-full max-w-md bg-white p-6 md:p-8 rounded-2xl shadow-xl">
+        <div className="text-center space-y-8">
+            {step === 1 && renderInitialStep()}
+            {step === 2 && renderLoadingStep()}
+            {step === 3 && renderResultsStep()}
+        </div>
+      </main>
+
+      <footer className="py-4 mt-4">
+        <p className="text-xs text-white">© 2024. All rights reserved.</p>
+      </footer>
+    </div>
   )
 }
