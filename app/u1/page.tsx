@@ -2,15 +2,16 @@
 
 import type React from "react"
 import { useState, useEffect, useMemo } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 import Image from "next/image"
-import Script from "next/script" // Importado para o widget da Hotmart
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Lock, CheckCircle, Loader2, MapPin, X, CheckCheck, AlertTriangle } from "lucide-react"
+// Adicionado LockOpen para o ícone de cadeado aberto
+import { Lock, CheckCircle, Loader2, MapPin, X, CheckCheck, AlertTriangle, LockOpen } from 'lucide-react'
 
 // =======================================================
-// HELPER COMPONENTS (FROM STEP-4)
+// HELPER COMPONENTS
 // =======================================================
 
 type Message = {
@@ -85,7 +86,6 @@ const countries = [
   { code: "+49", name: "Germany", flag: "🇩🇪", placeholder: "1512 3456789" },
   { code: "+39", name: "Italy", flag: "🇮🇹", placeholder: "312 345 6789" },
   { code: "+34", name: "Spain", flag: "🇪🇸", placeholder: "612 34 56 78" },
-  { code: "+351", name: "Portugal", flag: "🇵🇹", placeholder: "912 345 678" },
   { code: "+52", name: "Mexico", flag: "🇲🇽", placeholder: "55 1234 5678" },
   { code: "+55", name: "Brazil", flag: "🇧🇷", placeholder: "(11) 99999-9999" },
   { code: "+54", name: "Argentina", flag: "🇦🇷", placeholder: "11 1234-5678" },
@@ -183,12 +183,14 @@ const countries = [
   { code: "+298", name: "Faroe Islands", flag: "🇫🇴", placeholder: "211234" },
   { code: "+299", name: "Greenland", flag: "🇬🇱", placeholder: "221234" },
   { code: "+350", name: "Gibraltar", flag: "🇬🇮", placeholder: "571 12345" },
+  { code: "+351", name: "Portugal", flag: "🇵🇹", placeholder: "912 345 678" },
   { code: "+352", name: "Luxembourg", flag: "🇱🇺", placeholder: "621 123 456" },
   { code: "+353", name: "Ireland", flag: "🇮🇪", placeholder: "083 123 4567" },
   { code: "+354", name: "Iceland", flag: "🇮🇸", placeholder: "611 1234" },
   { code: "+355", name: "Albania", flag: "🇦🇱", placeholder: "067 123 4567" },
   { code: "+356", name: "Malta", flag: "🇲🇹", placeholder: "799 12345" },
   { code: "+357", name: "Cyprus", flag: "🇨🇾", placeholder: "961 12345" },
+  { code: "+358", name: "Finland", flag: "🇫🇮", placeholder: "50 123 4567" },
   { code: "+359", name: "Bulgaria", flag: "🇧🇬", placeholder: "088 123 4567" },
   { code: "+370", name: "Lithuania", flag: "🇱🇹", placeholder: "601 12345" },
   { code: "+371", name: "Latvia", flag: "🇱🇻", placeholder: "200 12345" },
@@ -221,21 +223,42 @@ const countries = [
   { code: "+508", name: "Saint Pierre and Miquelon", flag: "🇵🇲", placeholder: "551 1234" },
   { code: "+509", name: "Haiti", flag: "🇭🇹", placeholder: "3412 3456" },
   { code: "+590", name: "Guadeloupe", flag: "🇬🇵", placeholder: "0690 12 34 56" },
+  { code: "+591", name: "Bolivia", flag: "🇧🇴", placeholder: "71234567" },
   { code: "+592", name: "Guyana", flag: "🇬🇾", placeholder: "612 3456" },
+  { code: "+593", name: "Ecuador", flag: "🇪🇨", placeholder: "99 123 4567" },
   { code: "+594", name: "French Guiana", flag: "🇬🇫", placeholder: "0694 12 34 56" },
+  { code: "+595", name: "Paraguay", flag: "🇵🇾", placeholder: "961 123456" },
   { code: "+596", name: "Martinique", flag: "🇲🇶", placeholder: "0696 12 34 56" },
   { code: "+597", name: "Suriname", flag: "🇸🇷", placeholder: "741 1234" },
+  { code: "+598", name: "Uruguay", flag: "🇺🇾", placeholder: "94 123 456" },
   { code: "+599", name: "Curaçao", flag: "🇨🇼", placeholder: "9 561 1234" },
+  { code: "+670", name: "Timor-Leste", flag: "🇹🇱", placeholder: "771 1234" },
   { code: "+672", name: "Australian Antarctic Territory", flag: "🇦🇶", placeholder: "512 1234" },
+  { code: "+673", name: "Brunei", flag: "🇧🇳", placeholder: "872 1234" },
   { code: "+674", name: "Nauru", flag: "🇳🇷", placeholder: "555 1234" },
+  { code: "+675", name: "Papua New Guinea", flag: "🇵🇬", placeholder: "723 45678" },
+  { code: "+676", name: "Tonga", flag: "🇹🇴", placeholder: "771 1234" },
+  { code: "+677", name: "Solomon Islands", flag: "🇸🇧", placeholder: "742 1234" },
+  { code: "+678", name: "Vanuatu", flag: "🇻🇺", placeholder: "778 1234" },
+  { code: "+679", name: "Fiji", flag: "🇫🇯", placeholder: "920 1234" },
+  { code: "+680", name: "Palau", flag: "🇵🇼", placeholder: "620 1234" },
   { code: "+681", name: "Wallis and Futuna", flag: "🇼🇫", placeholder: "721 1234" },
+  { code: "+682", name: "Cook Islands", flag: "🇨🇰", placeholder: "722 1234" },
+  { code: "+683", name: "Niue", flag: "🇳🇺", placeholder: "811 1234" },
+  { code: "+685", name: "Samoa", flag: "🇼🇸", placeholder: "722 1234" },
   { code: "+686", name: "Kiribati", flag: "🇰🇮", placeholder: "720 1234" },
   { code: "+687", name: "New Caledonia", flag: "🇳🇨", placeholder: "750 1234" },
+  { code: "+688", name: "Tuvalu", flag: "🇹🇻", placeholder: "771 1234" },
   { code: "+689", name: "French Polynesia", flag: "🇵🇫", placeholder: "87 12 34 56" },
+  { code: "+690", name: "Tokelau", flag: "🇹🇰", placeholder: "811 1234" },
+  { code: "+691", name: "Micronesia", flag: "🇫🇲", placeholder: "920 1234" },
+  { code: "+692", name: "Marshall Islands", flag: "🇲🇭", placeholder: "692 1234" },
   { code: "+850", name: "North Korea", flag: "🇰🇵", placeholder: "191 123 4567" },
   { code: "+852", name: "Hong Kong", flag: "🇭🇰", placeholder: "6123 4567" },
   { code: "+853", name: "Macau", flag: "🇲🇴", placeholder: "6612 3456" },
+  { code: "+855", name: "Cambodia", flag: "🇰🇭", placeholder: "092 123 456" },
   { code: "+856", name: "Laos", flag: "🇱🇦", placeholder: "020 1234 5678" },
+  { code: "+880", name: "Bangladesh", flag: "🇧🇩", placeholder: "01712 345678" },
   { code: "+886", name: "Taiwan", flag: "🇹🇼", placeholder: "0912 345 678" },
   { code: "+960", name: "Maldives", flag: "🇲🇻", placeholder: "777 1234" },
   { code: "+961", name: "Lebanon", flag: "🇱🇧", placeholder: "03 123 456" },
@@ -243,9 +266,11 @@ const countries = [
   { code: "+963", name: "Syria", flag: "🇸🇾", placeholder: "093 123 456" },
   { code: "+964", name: "Iraq", flag: "🇮🇶", placeholder: "0790 123 4567" },
   { code: "+965", name: "Kuwait", flag: "🇰🇼", placeholder: "600 12345" },
+  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦", placeholder: "50 123 4567" },
   { code: "+967", name: "Yemen", flag: "🇾🇪", placeholder: "711 123 456" },
   { code: "+968", name: "Oman", flag: "🇴🇲", placeholder: "921 12345" },
   { code: "+970", name: "Palestine", flag: "🇵🇸", placeholder: "0599 123 456" },
+  { code: "+971", name: "United Arab Emirates", flag: "🇦🇪", placeholder: "50 123 4567" },
   { code: "+972", name: "Israel", flag: "🇮🇱", placeholder: "052-123-4567" },
   { code: "+973", name: "Bahrain", flag: "🇧🇭", placeholder: "3600 1234" },
   { code: "+974", name: "Qatar", flag: "🇶🇦", placeholder: "3312 3456" },
@@ -263,6 +288,9 @@ const countries = [
 export default function U1() {
   const router = useRouter()
 
+  // NOVO ESTADO PARA GÊNERO
+  const [selectedGender, setSelectedGender] = useState<'Male' | 'Female' | 'Non-binary'>('Female');
+  
   const [isLoadingStarted, setIsLoadingStarted] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [selectedCountry, setSelectedCountry] = useState(countries.find(c => c.name === "United States") || countries[0])
@@ -270,10 +298,10 @@ export default function U1() {
   const [countrySearch, setCountrySearch] = useState("")
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null)
   const [isLoadingPhoto, setIsLoadingPhoto] = useState(false)
+  const [isPhotoPrivate, setIsPhotoPrivate] = useState(false)
   const [photoError, setPhotoError] = useState("")
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null)
-  const [isPhotoPrivate, setIsPhotoPrivate] = useState(false)
-
+  
   const [progress, setProgress] = useState(0)
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [isCompleted, setIsCompleted] = useState(false)
@@ -284,8 +312,7 @@ export default function U1() {
   const [isLoadingLocation, setIsLoadingLocation] = useState(true)
   const [selectedConvoIndex, setSelectedConvoIndex] = useState<number | null>(null)
   
-  // NOVO ESTADO E FUNÇÕES PARA O COUNTDOWN
-  const [timeLeft, setTimeLeft] = useState(5 * 60); // 5 minutos em segundos
+  const [timeLeft, setTimeLeft] = useState(5 * 60);
 
   const formatTime = (seconds: number) => {
     if (seconds <= 0) return "00:00";
@@ -296,31 +323,40 @@ export default function U1() {
 
   const defaultLocation = { lat: -23.5505, lng: -46.6333, city: "São Paulo", country: "Brazil" }
 
-  const femaleImages = ["/images/female/4-h.png", "/images/female/5-h.png", "/images/female/6-h.png", "/images/female/7-h.png", "/images/female/8-h.png", "/images/female/9-h.png"]
-  const conversations = [
-    { img: "/images/female/1-h.png", name: "Blocked 🔒", msg: "Recovered deleted message", time: "Yesterday", popupName: "Blocked 🔒", chatData: [{ type: "incoming", content: "Hi, how are you?", time: "2:38 PM" }, { type: "outgoing", content: "I'm good, and you?", time: "2:40 PM" }, { type: "incoming", content: "Blocked content", time: "2:43 PM", isBlocked: true }] as Message[] },
-    { img: "/images/female/2-h.png", name: "Blocked 🔒", msg: "Suspicious audio detected", time: "2 days ago", popupName: "Blocked", chatData: [{ type: "incoming", content: "Hey my love", time: "10:21 PM" }, { type: "outgoing", content: "I'm here, my love", time: "10:27 PM" }, { type: "incoming", content: "Blocked content", time: "10:29 PM", isBlocked: true }] as Message[] },
-    { img: "/images/female/3-h.png", name: "Blocked 🔒", msg: "Suspicious photos found", time: "3 days ago", popupName: "Blocked", chatData: [{ type: "incoming", content: "Hi, how have you been?", time: "11:45 AM" }, { type: "outgoing", content: "I'm fine, thanks! What about you?", time: "11:47 AM" }, { type: "incoming", content: "Blocked content", time: "11:50 AM", isBlocked: true }] as Message[] },
-  ]
+  // DADOS DO RELATÓRIO AGORA SÃO DINÂMICOS COM BASE NO GÊNERO
+  const { reportConversations, reportMedia } = useMemo(() => {
+    const isMale = selectedGender === 'Male';
+    // Para 'Non-binary', usamos 'Female' como padrão para este exemplo
+    const genderPath = isMale ? 'male/zap' : 'female/zap';
+    const suffix = isMale ? 'f' : 'h';
+
+    const conversations = [
+      { img: `/images/${genderPath}/1-${suffix}.png`, name: "Blocked 🔒", msg: "Recovered deleted message", time: "Yesterday", popupName: "Blocked 🔒", chatData: [{ type: "incoming", content: "Hi, how are you?", time: "2:38 PM" }, { type: "outgoing", content: "I'm good, and you?", time: "2:40 PM" }, { type: "incoming", content: "Blocked content", time: "2:43 PM", isBlocked: true }] as Message[] },
+      { img: `/images/${genderPath}/2-${suffix}.png`, name: "Blocked 🔒", msg: "Suspicious audio detected", time: "2 days ago", popupName: "Blocked", chatData: [{ type: "incoming", content: "Hey my love", time: "10:21 PM" }, { type: "outgoing", content: "I'm here, my love", time: "10:27 PM" }, { type: "incoming", content: "Blocked content", time: "10:29 PM", isBlocked: true }] as Message[] },
+      { img: `/images/${genderPath}/3-${suffix}.png`, name: "Blocked 🔒", msg: "Suspicious photos found", time: "3 days ago", popupName: "Blocked", chatData: [{ type: "incoming", content: "Hi, how have you been?", time: "11:45 AM" }, { type: "outgoing", content: "I'm fine, thanks! What about you?", time: "11:47 AM" }, { type: "incoming", content: "Blocked content", time: "11:50 AM", isBlocked: true }] as Message[] },
+    ];
+    
+    const media = [ `/images/${genderPath}/4-${suffix}.png`, `/images/${genderPath}/5-${suffix}.png`, `/images/${genderPath}/6-${suffix}.png`, `/images/${genderPath}/7-${suffix}.png`, `/images/${genderPath}/8-${suffix}.png`, `/images/${genderPath}/9-${suffix}.png`,];
+
+    return { reportConversations: conversations, reportMedia: media };
+  }, [selectedGender]);
+  
   const suspiciousKeywords = [{ word: "Naughty", count: 13 }, { word: "Love", count: 22 }, { word: "Secret", count: 7 }, { word: "Hidden", count: 11 }, { word: "Don't tell", count: 5 }]
   
-  const filteredCountries = useMemo(() => countries.filter(
-    (country) =>
-      country.name.toLowerCase().includes(countrySearch.toLowerCase()) || country.code.includes(countrySearch),
-  ), [countrySearch])
+  const filteredCountries = useMemo(() => countries.filter((c) => c.name.toLowerCase().includes(countrySearch.toLowerCase()) || c.code.includes(countrySearch)), [countrySearch])
 
   const fetchWhatsAppPhoto = async (phone: string) => {
     if (phone.replace(/[^0-9]/g, "").length < 10) return
     setIsLoadingPhoto(true)
     setPhotoError("")
     setProfilePhoto(null)
-    setIsPhotoPrivate(false)
+    setIsPhotoPrivate(false) // Reseta o estado de privacidade ao buscar nova foto
     try {
       const response = await fetch("/api/whatsapp-photo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone }), })
       const data = await response.json()
       if (!response.ok || !data?.success) {
         setProfilePhoto("/placeholder.svg")
-        setIsPhotoPrivate(true)
+        setIsPhotoPrivate(true) // Assume como privado se houver erro
         setPhotoError("Could not load photo.")
         return
       }
@@ -329,7 +365,7 @@ export default function U1() {
     } catch (error) {
       console.error("Error fetching photo:", error)
       setProfilePhoto("/placeholder.svg")
-      setIsPhotoPrivate(true)
+      setIsPhotoPrivate(true) // Assume como privado em caso de erro de rede
       setPhotoError("Error loading photo.")
     } finally {
       setIsLoadingPhoto(false)
@@ -354,6 +390,7 @@ export default function U1() {
     setPhoneNumber("")
     setProfilePhoto(null)
     setPhotoError("")
+    setIsPhotoPrivate(false) // Reseta ao mudar de país
     if (debounceTimeout) clearTimeout(debounceTimeout)
   }
 
@@ -465,13 +502,13 @@ export default function U1() {
     }
   }, [isCompleted]);
 
-
   const handleStartLoadingProcess = () => {
     const fullNumber = (selectedCountry.code + phoneNumber).replace(/[^0-9+]/g, "")
     if (fullNumber.length > 10) {
       const finalPhoto = profilePhoto || "/placeholder.svg"
       localStorage.setItem("profilePhoto", finalPhoto)
       localStorage.setItem("phoneNumber", fullNumber)
+      localStorage.setItem("selectedGender", selectedGender) // Salva o gênero
       setProfilePhoto(finalPhoto)
       setIsLoadingStarted(true)
     } else {
@@ -481,7 +518,14 @@ export default function U1() {
 
   return (
     <>
-      {/* SCRIPT DA HOTMART CARREGADO NO INÍCIO */}
+      {/* FAIXA DE ATENÇÃO NO TOPO */}
+      <div className="bg-red-600 text-center py-2.5 px-4">
+        <p className="text-sm font-semibold">
+          <span className="text-white">Attention: do not close this page, </span>
+          <span className="text-yellow-300">Your payment is still being processed.</span>
+        </p>
+      </div>
+      
       <Script src="https://checkout.hotmart.com/lib/hotmart-checkout-elements.js" strategy="afterInteractive" />
 
       <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-12">
@@ -492,7 +536,7 @@ export default function U1() {
           </div>
           
           <div className="mx-auto mb-6 h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
-            {isLoadingPhoto ? <Loader2 className="h-10 w-10 text-gray-500 animate-spin" /> : profilePhoto ? <Image src={profilePhoto} alt="WhatsApp Profile" width={128} height={128} className="object-cover h-full w-full" unoptimized onError={() => setProfilePhoto("/placeholder.svg")} /> : <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>}
+            {isLoadingPhoto ? <Loader2 className="h-10 w-10 text-gray-500 animate-spin" /> : profilePhoto ? <Image src={profilePhoto || "/placeholder.svg"} alt="WhatsApp Profile" width={128} height={128} className="object-cover h-full w-full" unoptimized onError={() => setProfilePhoto("/placeholder.svg")} /> : <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>}
           </div>
           
           <div>
@@ -501,26 +545,64 @@ export default function U1() {
           </div>
 
           <div className="w-full space-y-6">
+            
+            {/* COMPONENTE DE SELEÇÃO DE GÊNERO */}
+            <div className="w-full space-y-4 text-left">
+  <h2 className="font-semibold text-gray-800 text-lg">What gender are they?</h2>
+  <div className="grid grid-cols-3 gap-3">
+    
+    {/* Botão Male com emoji */}
+    <button
+      onClick={() => setSelectedGender('Male')}
+      className={`flex flex-col items-center justify-center gap-2 p-4 bg-white border rounded-xl shadow-sm transition-all duration-200 ${
+        selectedGender === 'Male'
+          ? 'border-blue-500 ring-2 ring-blue-500/20'
+          : 'border-gray-200 hover:border-gray-300'
+      }`}
+    >
+      <span className="text-5xl">👨🏻</span>
+      <span className="font-medium text-gray-700">Male</span>
+    </button>
+
+    {/* Botão Female com emoji */}
+    <button
+      onClick={() => setSelectedGender('Female')}
+      className={`flex flex-col items-center justify-center gap-2 p-4 bg-white border rounded-xl shadow-sm transition-all duration-200 ${
+        selectedGender === 'Female'
+          ? 'border-blue-500 ring-2 ring-blue-500/20'
+          : 'border-gray-200 hover:border-gray-300'
+      }`}
+    >
+      <span className="text-5xl">👩🏻</span>
+      <span className="font-medium text-gray-700">Female</span>
+    </button>
+
+    {/* Botão Non-binary com emoji */}
+    <button
+      onClick={() => setSelectedGender('Non-binary')}
+      className={`flex flex-col items-center justify-center gap-2 p-4 bg-white border rounded-xl shadow-sm transition-all duration-200 ${
+        selectedGender === 'Non-binary'
+          ? 'border-blue-500 ring-2 ring-blue-500/20'
+          : 'border-gray-200 hover:border-gray-300'
+      }`}
+    >
+      <span className="text-5xl">🧑🏻</span>
+      <span className="font-medium text-gray-700">Non-binary</span>
+    </button>
+  </div>
+</div>
+
             <div className="flex items-center bg-white rounded-xl border-2 border-gray-300 shadow-sm focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 transition-all">
               <div className="relative">
-                <button type="button" onClick={() => setShowCountryDropdown(!showCountryDropdown)} className="flex items-center gap-2 h-14 px-4 bg-gray-50 hover:bg-gray-100 rounded-l-lg transition-colors">
-                  <span className="text-2xl">{selectedCountry.flag}</span>
-                  <span className="text-gray-800 font-medium">{selectedCountry.code}</span>
-                </button>
-                {showCountryDropdown && (
-                  <div className="absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-lg z-50 w-80 max-h-72 overflow-y-auto">
-                    <div className="p-2 sticky top-0 bg-white border-b"><Input type="text" placeholder="Search country or code..." value={countrySearch} onChange={(e) => setCountrySearch(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm" /></div>
-                    <ul className="py-1">
-                      {filteredCountries.length > 0 ? (filteredCountries.map((country, index) => (<li key={`${country.name}-${country.code}-${index}`}><button type="button" onClick={() => handleSelectCountry(country)} className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center gap-3 text-sm"><span className="text-xl">{country.flag}</span><span className="text-gray-800 font-medium">{country.name}</span><span className="text-gray-500 ml-auto">{country.code}</span></button></li>))) : (<li className="px-3 py-2 text-sm text-gray-500 text-center">No countries found.</li>)}
-                    </ul>
-                  </div>
-                )}
+                <button type="button" onClick={() => setShowCountryDropdown(!showCountryDropdown)} className="flex items-center gap-2 h-14 px-4 bg-gray-50 hover:bg-gray-100 rounded-l-lg transition-colors"><span className="text-2xl">{selectedCountry.flag}</span><span className="text-gray-800 font-medium">{selectedCountry.code}</span></button>
+                {showCountryDropdown && (<div className="absolute top-full left-0 mt-2 bg-white border rounded-xl shadow-lg z-50 w-80 max-h-72 overflow-y-auto"><div className="p-2 sticky top-0 bg-white border-b"><Input type="text" placeholder="Search country or code..." value={countrySearch} onChange={(e) => setCountrySearch(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-sm" /></div><ul className="py-1">{filteredCountries.length > 0 ? (filteredCountries.map((country, index) => (<li key={`${country.name}-${country.code}-${index}`}><button type="button" onClick={() => handleSelectCountry(country)} className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center gap-3 text-sm"><span className="text-xl">{country.flag}</span><span className="text-gray-800 font-medium">{country.name}</span><span className="text-gray-500 ml-auto">{country.code}</span></button></li>))) : (<li className="px-3 py-2 text-sm text-gray-500 text-center">No countries found.</li>)}</ul></div>)}
               </div>
               <div className="h-8 w-px bg-gray-200"></div>
               <Input type="tel" placeholder={selectedCountry.placeholder} value={phoneNumber} onChange={handlePhoneInputChange} className="flex-1 h-14 text-lg border-none bg-transparent focus:ring-0" />
             </div>
-            <Button onClick={handleStartLoadingProcess} disabled={!phoneNumber.trim() || isLoadingPhoto || isLoadingStarted} className="w-full h-16 bg-green-500 hover:bg-green-600 text-white text-xl font-bold rounded-2xl flex items-center justify-center gap-3 disabled:bg-green-400 disabled:cursor-not-allowed"><Lock className="h-6 w-6" /> Clone WhatsApp Now</Button>
+            <Button onClick={handleStartLoadingProcess} disabled={!phoneNumber.trim() || isLoadingPhoto || isLoadingStarted || isPhotoPrivate} className="w-full h-16 bg-green-500 hover:bg-green-600 text-white text-xl font-bold rounded-2xl flex items-center justify-center gap-3 disabled:bg-green-400 disabled:cursor-not-allowed"><Lock className="h-6 w-6" /> Clone WhatsApp Now</Button>
             {photoError && <p className="text-red-500 text-sm -mt-4">{photoError}</p>}
+            {isPhotoPrivate && <p className="text-red-500 text-sm -mt-2">This number has a private profile. We cannot load the photo.</p>}
           </div>
 
           {isLoadingStarted && (
@@ -528,9 +610,11 @@ export default function U1() {
               {!isCompleted ? (
                 <div className="bg-white rounded-lg shadow-md p-6">
                   <div className="flex flex-col items-center text-center mb-6">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden border-2 border-gray-300 mb-3">{profilePhoto && <Image src={profilePhoto} alt="WhatsApp Profile" width={64} height={64} className="object-cover h-full w-full" unoptimized />}</div>
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg mb-3">
+                      {isLoadingPhoto ? <Loader2 className="h-8 w-8 text-gray-500 animate-spin" /> : profilePhoto ? <Image src={profilePhoto || "/placeholder.svg"} alt="WhatsApp Profile" width={64} height={64} className="object-cover h-full w-full" unoptimized onError={() => setProfilePhoto("/placeholder.svg")} /> : <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" /></svg>}
+                    </div>
                     <div>
-                      <h3 className="font-semibold text-gray-800 text-lg mb-1">WhatsApp Profile</h3>
+                      <h3 className="font-semibold text-gray-800 text-lg mb-1">{profilePhoto && !isPhotoPrivate ? "WhatsApp Profile" : "Private Profile"}</h3>
                       <p className="text-gray-600 mb-2">{localStorage.getItem("phoneNumber")}</p>
                       <div className="flex items-center justify-center gap-1.5 text-green-600 text-sm"><MapPin className="h-4 w-4" /><span>{location?.city || "..."}</span></div>
                     </div>
@@ -550,42 +634,27 @@ export default function U1() {
                 <div className="text-left animate-fade-in">
                   <div className="bg-green-500 text-white text-center py-4 rounded-t-lg"><h1 className="text-xl font-bold">WhatsApp Access Report</h1><p className="text-sm opacity-90">Analysis of the personal mobile</p></div>
                   <div className="bg-white p-4 space-y-6 rounded-b-lg shadow-md">
-                    <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Conversation Analysis</h2><p className="text-sm text-gray-600 mb-4"><span className="font-semibold text-red-500">148 suspicious conversations</span> were found. The system recovered <span className="font-semibold text-orange-500">deleted messages</span>.</p><div className="space-y-3">{conversations.map((convo, index) => (<div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100" onClick={() => setSelectedConvoIndex(index)}><div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full overflow-hidden"><Image src={convo.img} alt="Profile" width={32} height={32} /></div><div><p className="font-medium text-sm">{convo.name}</p><p className="text-xs text-gray-500">{convo.msg}</p></div></div><span className="text-xs text-gray-400">{convo.time}</span></div>))}</div></div>
-                    <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Recovered Media</h2><p className="text-sm text-gray-600 mb-4"><span className="font-semibold text-red-500">247 deleted photos</span> were found that may contain sensitive content.</p><div className="grid grid-cols-3 gap-3">{femaleImages.map((image, index) => (<div key={index} className="aspect-square relative rounded-lg overflow-hidden"><Image src={image} alt={`Recovered media ${index + 1}`} fill className="object-cover" /></div>))}</div></div>
+                    <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Conversation Analysis</h2><p className="text-sm text-gray-600 mb-4"><span className="font-semibold text-red-500">148 suspicious conversations</span> were found. The system recovered <span className="font-semibold text-orange-500">deleted messages</span>.</p><div className="space-y-3">{reportConversations.map((convo, index) => (<div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100" onClick={() => setSelectedConvoIndex(index)}><div className="flex items-center gap-3"><div className="w-8 h-8 rounded-full overflow-hidden"><Image src={convo.img || "/placeholder.svg"} alt="Profile" width={32} height={32} /></div><div><p className="font-medium text-sm">{convo.name}</p><p className="text-xs text-gray-500">{convo.msg}</p></div></div><span className="text-xs text-gray-400">{convo.time}</span></div>))}</div></div>
+                    <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Recovered Media</h2><p className="text-sm text-gray-600 mb-4"><span className="font-semibold text-red-500">247 deleted photos</span> were found that may contain sensitive content.</p><div className="grid grid-cols-3 gap-3">{reportMedia.map((image, index) => (<div key={index} className="aspect-square relative rounded-lg overflow-hidden"><Image src={image || "/placeholder.svg"} alt={`Recovered media ${index + 1}`} fill className="object-cover" /></div>))}</div></div>
                     <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Suspicious Keywords</h2><p className="text-sm text-gray-600 mb-4">The system scanned <span className="font-semibold text-red-500">4,327 messages</span> and identified several keywords.</p><div className="space-y-1">{suspiciousKeywords.map((item, index) => (<div key={index} className="flex items-center justify-between py-2 border-b last:border-b-0"><span className="text-lg text-gray-800">"{item.word}"</span><div className="flex items-center justify-center w-7 h-7 bg-green-500 rounded-full text-white text-sm font-bold">{item.count}</div></div>))}</div></div>
                     <div className="bg-white rounded-lg p-4 border border-gray-200"><h2 className="text-lg font-semibold text-gray-800 mb-2">Suspicious Location</h2><p className="text-sm text-gray-600 mb-4">The device location was tracked. Check below:</p>{isLoadingLocation ? <div className="text-center p-10 h-96 flex items-center justify-center"><p>Detecting location...</p></div> : <RealtimeMap lat={location?.lat ?? defaultLocation.lat} lng={location?.lng ?? defaultLocation.lng} city={location?.city ?? defaultLocation.city} country={location?.country ?? defaultLocation.country} />}</div>
                     
-                    {/* =========== NOVA SEÇÃO DE CTA COM COUNTDOWN E HOTMART =========== */}
                     <div className="bg-white p-5 rounded-lg shadow-xl text-center border border-gray-200">
+                      {/* ÍCONE DE CADEADO ABERTO AQUI */}
                       <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
-                        <Lock className="text-white" size={32} />
+                        <LockOpen className="text-white" size={32} />
                       </div>
-                      <h2 className="text-xl font-bold text-gray-800">
-                        <span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT
-                      </h2>
-                      <p className="text-gray-600 mt-1">
-                        Get instant access to the full report with uncensored photos and complete conversation history.
-                      </p>
+                      <h2 className="text-xl font-bold text-gray-800"><span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT</h2>
+                      <p className="text-gray-600 mt-1">Get instant access to the full report with uncensored photos and complete conversation history.</p>
 
                       <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5">
-                        <div className="flex items-center justify-center gap-2">
-                          <AlertTriangle className="text-red-600" />
-                          <h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3>
-                        </div>
-                        <p className="text-4xl font-mono font-bold my-1 text-red-600">
-                          {formatTime(timeLeft)}
-                        </p>
-                        <p className="text-xs text-red-700">
-                          After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.
-                        </p>
+                        <div className="flex items-center justify-center gap-2"><AlertTriangle className="text-red-600" /><h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3></div>
+                        <p className="text-4xl font-mono font-bold my-1 text-red-600">{formatTime(timeLeft)}</p>
+                        <p className="text-xs text-red-700">After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.</p>
                       </div>
                       
-                      {/* Container do Widget Hotmart */}
                       <div id="hotmart-sales-funnel" className="w-full pt-4"></div>
-
                     </div>
-                    {/* =================================================================== */}
-
                   </div>
                 </div>
               )}
@@ -601,7 +670,7 @@ export default function U1() {
           )}
         </main>
       </div>
-      {selectedConvoIndex !== null && <ChatPopup onClose={() => setSelectedConvoIndex(null)} profilePhoto={conversations[selectedConvoIndex].img} conversationData={conversations[selectedConvoIndex].chatData} conversationName={conversations[selectedConvoIndex].popupName} />}
+      {selectedConvoIndex !== null && <ChatPopup onClose={() => setSelectedConvoIndex(null)} profilePhoto={reportConversations[selectedConvoIndex].img} conversationData={reportConversations[selectedConvoIndex].chatData} conversationName={reportConversations[selectedConvoIndex].popupName} />}
     </>
   )
 }
