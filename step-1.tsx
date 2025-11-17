@@ -2,6 +2,8 @@
 
 import { Search, Activity, MapPin, Eye, ShieldCheck, Heart, Camera, MessageSquare, Check, CheckCircle, Star, FolderArchive, Users } from 'lucide-react'
 import Image from "next/image"
+// 1. Importe o useRouter do Next.js
+import { useRouter } from 'next/navigation'
 
 // A small helper component to render the star ratings
 const StarRating = ({ rating = 5 }) => (
@@ -13,6 +15,14 @@ const StarRating = ({ rating = 5 }) => (
 );
 
 export default function Step1() {
+  // 2. Crie uma instância do router
+  const router = useRouter();
+
+  // 3. Crie uma função para lidar com o clique e navegar
+  const handleNavigate = () => {
+    router.push('/step-2'); // Certifique-se que o caminho '/step-2' está correto
+  };
+
   return (
     <div className="bg-white text-gray-800 font-sans">
       {/* =================================== */}
@@ -26,8 +36,8 @@ export default function Step1() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-  Today it's a. <span className="text-red-500">like</span> Tomorrow, a <span className="text-red-500">conversation.</span> And after?<br />
-</h1>
+            Today it's a. <span className="text-red-500">like</span> Tomorrow, a <span className="text-red-500">conversation.</span> And after?<br />
+          </h1>
 
           <p className="text-lg text-gray-300 mb-8 max-w-xl">
             Betrayal doesn't start with a kiss. It starts with a direct message.
@@ -39,36 +49,25 @@ export default function Step1() {
           </div>
 
           <div className="w-full max-w-lg space-y-3 text-left mb-8">
-    {/* Text 1: Stories */}
-    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
-        
-        
-        <span>👀 Find out which "friends" see your stories that you can't view.</span>
-    </div>
+            <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+                <span>👀 Find out which "friends" see your stories that you can't view.</span>
+            </div>
+            <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+                <span>👍 Monitor every like, even if they try to "unlike" later.</span>
+            </div>
+            <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+                <span>💾 Discover the photos and videos they're saving in hidden folders.</span>
+            </div>
+            <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
+              <span>🤫 "This message was deleted"? Find out the original content</span>
+            </div>
+          </div>
 
-    {/* Text 2: Likes */}
-    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
-        
-        
-        <span>👍 Monitor every like, even if they try to "unlike" later.</span>
-    </div>
-    
-    {/* Text 3: Saved Media */}
-    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
-        
-        
-        <span>💾 Discover the photos and videos they're saving in hidden folders.</span>
-    </div>
-
-    {/* Text 4: Deleted Messages */}
-    <div className="bg-white/10 p-4 rounded-lg flex items-center gap-4 border border-white/20">
-      
-      
-      <span>🤫 "This message was deleted"? Find out the original content</span>
-    </div>
-</div>
-
-          <button className="w-full max-w-lg bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105">
+          {/* 4. Adicione o onClick ao botão */}
+          <button 
+            onClick={handleNavigate}
+            className="w-full max-w-lg bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105"
+          >
             GET THE TRUTH – START ANONYMOUS SEARCH
           </button>
           <p className="text-xs text-gray-400 mt-2">100% anonymous investigation. They'll never know you checked.</p>
@@ -96,8 +95,7 @@ export default function Step1() {
                 <Search className="h-8 w-8 text-pink-500" />
               </div>
               <h4 className="font-bold text-lg mb-2">RECENT ACTIVITY</h4>
-              <p className="text-gray-500 text-sm">See which social networks he uses the most
-</p>
+              <p className="text-gray-500 text-sm">See which social networks he uses the most</p>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg text-center">
               <div className="inline-block bg-purple-100 p-4 rounded-xl mb-4">
@@ -133,7 +131,7 @@ export default function Step1() {
             You're Not Alone - See What Others Discovered
           </h2>
           <div className="space-y-8">
-            {/* Testimonial Card 1 */}
+            {/* Testimonial Cards... */}
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
                 <Image src="/placeholder-user-1.jpg" alt="Sarah" width={48} height={48} className="rounded-full mr-4" />
@@ -147,8 +145,6 @@ export default function Step1() {
               </blockquote>
               <StarRating />
             </div>
-
-            {/* Testimonial Card 2 */}
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
                 <Image src="/placeholder-user-2.jpg" alt="Jennifer" width={48} height={48} className="rounded-full mr-4" />
@@ -162,8 +158,6 @@ export default function Step1() {
               </blockquote>
               <StarRating />
             </div>
-
-            {/* Testimonial Card 3 */}
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
                 <Image src="/placeholder-user-3.jpg" alt="Michelle" width={48} height={48} className="rounded-full mr-4" />
@@ -179,11 +173,14 @@ export default function Step1() {
             </div>
           </div>
 
-          <button className="w-full max-w-lg mt-12 bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105">
+          {/* 4. Adicione o onClick ao segundo botão também */}
+          <button 
+            onClick={handleNavigate}
+            className="w-full max-w-lg mt-12 bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105"
+          >
             START MY ANONYMOUS INVESTIGATION
           </button>
           <p className="text-xs text-gray-400 mt-2">100% anonymous - Your investigation stays completely private</p>
-
         </div>
       </section>
     </div>
