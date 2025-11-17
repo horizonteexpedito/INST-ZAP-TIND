@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
-import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle, Wifi } from "lucide-react"
+import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle, Wifi, LockOpen } from 'lucide-react'
 
 // ==========================================================
 // DADOS DOS PERFIS E IMAGENS
@@ -46,7 +46,7 @@ const LIKED_BY_FEMALE_PHOTOS = [
 const LIKED_BY_FEMALE_STORIES = [
     '/images/female/liked/female-liked-story-1.jpg',
     '/images/female/liked/female-liked-story-2.jpg',
-    '/images/female/liked/female-liked-story-3.jpg',
+    '/images/female/liked/female-liked-story3.jpg',
 ];
 
 // Array de comentários para a seção "INTERCEPTED"
@@ -263,7 +263,7 @@ export default function Step2() {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-4 text-left">
           {profileImageUrl ? (
-            <img src={profileImageUrl} alt="profile" className="w-14 h-14 rounded-full object-cover filter grayscale" />
+            <img src={profileImageUrl || "/placeholder.svg"} alt="profile" className="w-14 h-14 rounded-full object-cover filter grayscale" />
           ) : (
             <div className="w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
           )}
@@ -347,20 +347,79 @@ export default function Step2() {
       {profileData && renderProfileCard(profileData)}
       {randomizedResults.length > 0 && (<div className="p-3 bg-gray-100 border border-gray-300 rounded-lg font-mono text-sm text-left"><p><span className="text-green-600 font-bold">[SYSTEM_LOG]</span> New activity detected:</p><p className="ml-4"><span className="text-blue-600">[INSTAGRAM]</span> {randomizedResults[0].username} liked your photo.</p><p className="ml-4"><span className="text-blue-600">[INSTAGRAM]</span> New message from {randomizedResults[1]?.username || randomizedResults[0].username}.</p></div>)}
       <div className="space-y-3 text-left">
-        {randomizedResults.length >= 3 && (<>{[0,1,2].map(i => (<div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><img src={randomizedResults[i].image} alt="User Avatar" className="w-10 h-10 rounded-full object-cover" /><div className="flex-1 text-sm"><p className="text-gray-800"><span className="font-semibold">{randomizedResults[i].username}</span> { i < 2 ? 'liked your photo' : 'sent you a message'}</p><p className="text-gray-500 text-xs">{[1,2,5][i]} minutes ago</p></div>{ i < 2 ? <Heart className="text-pink-500" size={20} /> : <MessageCircle className="text-blue-500" size={20} />}</div>))}</>)}
+        {randomizedResults.length >= 3 && (<>{[0,1,2].map(i => (<div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><img src={randomizedResults[i].image || "/placeholder.svg"} alt="User Avatar" className="w-10 h-10 rounded-full object-cover" /><div className="flex-1 text-sm"><p className="text-gray-800"><span className="font-semibold">{randomizedResults[i].username}</span> { i < 2 ? 'liked your photo' : 'sent you a message'}</p><p className="text-gray-500 text-xs">{[1,2,5][i]} minutes ago</p></div>{ i < 2 ? <Heart className="text-pink-500" size={20} /> : <MessageCircle className="text-blue-500" size={20} />}</div>))}</>)}
         <div className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><img src={profileImageUrl || ""} alt="Target Avatar" className="w-10 h-10 rounded-full object-cover" /><div className="flex-1 text-sm"><p className="text-gray-800"><span className="font-semibold">{instagramHandle}</span> is typing...</p><p className="text-gray-500 text-xs">Just now</p></div><span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse ml-auto"></span></div>
         <div className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><img src={profileImageUrl || ""} alt="Target Avatar" className="w-10 h-10 rounded-full object-cover" /><div className="flex-1 text-sm"><p className="text-gray-800"><span className="font-semibold">{instagramHandle}</span> sent a new message.</p><p className="text-gray-500 text-xs">1 minute ago</p></div><MessageCircle className="text-blue-500 ml-auto" size={20} /></div>
       </div>
       <div className="space-y-5 text-left">
         <h2 className="text-xl font-bold text-black text-center"><span className="text-red-600">INTERCEPTED:</span> Suspicious Likes from {instagramHandle}</h2>
-        {interceptedImages.map((item, index) => (<div key={index} className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><div className="relative w-full h-56 rounded-md overflow-hidden"><img src={item.image} alt={`Liked content ${index + 1}`} className="w-full h-full object-cover filter blur-sm" /><div className="absolute inset-0 flex items-center justify-center bg-black/40"><Lock size={40} className="text-white" /></div></div><div className="flex items-center gap-2 mt-2"><Heart size={16} className="text-pink-500" /><span className="text-sm text-gray-600">{index % 2 === 0 ? '1.2K' : '876'} likes</span></div><div className="flex items-center gap-3 mt-2"><img src={profileImageUrl || ""} alt="User" className="w-8 h-8 rounded-full object-cover" /><p className="text-sm text-gray-800"><b>{instagramHandle}</b> {item.comment}</p></div></div>))}
+        {interceptedImages.map((item, index) => (<div key={index} className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm"><div className="relative w-full h-56 rounded-md overflow-hidden"><img src={item.image || "/placeholder.svg"} alt={`Liked content ${index + 1}`} className="w-full h-full object-cover filter blur-sm" /><div className="absolute inset-0 flex items-center justify-center bg-black/40"><Lock size={40} className="text-white" /></div></div><div className="flex items-center gap-2 mt-2"><Heart size={16} className="text-pink-500" /><span className="text-sm text-gray-600">{index % 2 === 0 ? '1.2K' : '876'} likes</span></div><div className="flex items-center gap-3 mt-2"><img src={profileImageUrl || ""} alt="User" className="w-8 h-8 rounded-full object-cover" /><p className="text-sm text-gray-800"><b>{instagramHandle}</b> {item.comment}</p></div></div>))}
       </div>
       <div className="bg-white p-5 rounded-lg shadow-xl text-center mt-8">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4"><Lock className="text-white" size={32} /></div>
-        <h2 className="text-xl font-bold text-gray-800"><span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT</h2>
-        <p className="text-gray-600 mt-1 mb-6">Get instant access to the full report with uncensored photos and complete conversation history.</p>
-        <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5"><div className="flex items-center justify-center gap-2"><AlertTriangle className="text-red-600" /><h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3></div><p className="text-4xl font-mono font-bold my-1 text-red-600">{formatTime(timeLeft)}</p><p className="text-xs text-red-700">After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.</p></div>
-        <a href="https://pay.hotmart.com/P102903672F?checkoutMode=10" className="mt-6 block w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl">🔓 UNLOCK COMPLETE REPORT</a>
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
+          <LockOpen className="text-white" size={40} />
+        </div>
+        <h2 className="text-xl font-bold text-gray-800">
+          <span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT
+        </h2>
+        <p className="text-gray-600 mt-1 mb-6">
+          Get instant access to the full report with uncensored photos and complete conversation history.
+        </p>
+        <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5">
+          <div className="flex items-center justify-center gap-2">
+            <AlertTriangle className="text-red-600" />
+            <h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3>
+          </div>
+          <p className="text-4xl font-mono font-bold my-1 text-red-600">
+            {formatTime(timeLeft)}
+          </p>
+          <p className="text-xs text-red-700">
+            After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.
+          </p>
+        </div>
+        
+        {/* --- MAIN BUTTON AND PRICE --- */}
+        <a href="https://pay.hotmart.com/P102903672F?checkoutMode=10" className="mt-6 block w-full bg-green-500 hover:bg-green-600 text-white font-bold text-lg py-4 rounded-lg transition-colors shadow-lg hover:shadow-xl">
+          🔓 YES, I WANT THE COMPLETE REPORT
+        </a>
+        <div className="mt-4 text-center">
+          <p className="text-gray-500">
+            From <span className="line-through">$79</span> for only
+          </p>
+          <p className="text-4xl font-bold text-green-600">$37</p>
+          <p className="text-xs text-gray-400 mt-1">
+            (One-Time Payment)
+          </p>
+        </div>
+
+        {/* --- TRUST & GUARANTEE AREA (All Translated) --- */}
+        <div className="mt-8 border-t pt-6">
+          {/* 1. Social Proof */}
+          <div className="flex items-center justify-center gap-2 text-yellow-500">
+            <span>★★★★★</span>
+            <span className="text-gray-600 font-medium text-sm">4.9/5.0</span>
+          </div>
+          <p className="text-sm text-gray-500 mt-1">
+            Based on 15,783 satisfied customers.
+          </p>
+
+          {/* 2. Guarantee */}
+          <div className="mt-6 flex items-center justify-center gap-3 bg-gray-50 p-3 rounded-lg">
+            <img src="/images/design-mode/guarantee.png" alt="Guarantee Seal" className="h-12 w-12 opacity-70" />
+            <div>
+              <h4 className="font-bold text-gray-800 text-left">7-Day Guarantee</h4>
+              <p className="text-xs text-gray-600 text-left">
+                Your satisfaction or your money back. Zero risk for you.
+              </p>
+            </div>
+          </div>
+          
+          {/* 3. Security Seals */}
+          <div className="mt-4">
+              <p className="text-xs text-gray-400 mb-2">100% Secure Checkout</p>
+              <img src="/images/secure-payment-badge2.png" alt="Secure Payment Badges" className="mx-auto h-6 opacity-80" />
+          </div>
+        </div>
       </div>
     </div>
   );

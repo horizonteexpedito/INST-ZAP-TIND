@@ -134,9 +134,9 @@ export default function Step1() {
             {/* Testimonial Cards... */}
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
-                <Image src="/placeholder-user-1.jpg" alt="Sarah" width={48} height={48} className="rounded-full mr-4" />
+                <Image src="/images/83.jpg" alt="Sarah" width={48} height={48} className="rounded-full mr-4" />
                 <div>
-                  <p className="font-bold">Sarah, 32</p>
+                  <p className="font-bold">Sarah, 42</p>
                   <p className="text-sm text-green-600 flex items-center"><Check className="h-4 w-4 mr-1"/>Verified User</p>
                 </div>
               </div>
@@ -147,9 +147,9 @@ export default function Step1() {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
-                <Image src="/placeholder-user-2.jpg" alt="Jennifer" width={48} height={48} className="rounded-full mr-4" />
+                <Image src="/images/86.jpg" alt="Jennifer" width={48} height={48} className="rounded-full mr-4" />
                 <div>
-                  <p className="font-bold">Jennifer, 28</p>
+                  <p className="font-bold">Jennifer, 33</p>
                   <p className="text-sm text-gray-500">Investigation completed November 2025</p>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export default function Step1() {
             </div>
             <div className="bg-white p-6 rounded-xl shadow-lg text-left">
               <div className="flex items-center mb-4">
-                <Image src="/placeholder-user-3.jpg" alt="Michelle" width={48} height={48} className="rounded-full mr-4" />
+                <Image src="/images/87.jpg" alt="Michelle" width={48} height={48} className="rounded-full mr-4" />
                 <div>
                   <p className="font-bold">Michelle, 35</p>
                   <p className="text-sm text-green-600 flex items-center"><Check className="h-4 w-4 mr-1"/>Verified User</p>
